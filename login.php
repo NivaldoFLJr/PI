@@ -5,7 +5,7 @@ include("./servidor.php");
 
 extract($_POST);
 
-$sql = " select  * from tusuarios " ;
+$sql = " select  * from usuarios " ;
 $sql .= " where cpf = '".$cpf."' and  senha ='".$senha."'";
 
 $resultado  = mysqli_query($banco, $sql );

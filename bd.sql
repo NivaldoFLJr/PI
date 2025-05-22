@@ -43,3 +43,19 @@ FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
 FOREIGN KEY (id_conta) REFERENCES contas(id_conta),
 FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
+
+DELIMITER //
+
+CREATE TRIGGER after_usuario_insert
+AFTER INSERT ON contas
+FOR EACH ROW
+BEGIN
+    DECLARE usuario_nome VARCHAR(255);
+
+    SELECT nome INTO usuario_nome FROM usuarios WHERE id_usuario = NEW.id_usuario;
+
+    UPDATE contas SET nome_conta = usuario_nome WHERE id_conta = NEW.id_conta;
+END;
+
+//
+DELIMITER ;
