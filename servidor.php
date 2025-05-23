@@ -3,7 +3,7 @@
     define('USUARIO', 'root');
     define('SENHA', '');
     define('BANCO', 'usuarios');
-    define('PORTA', 3306);
+    define('PORTA', 3307);
 
     $OOP = new mysqli(SERVIDOR, USUARIO, SENHA, BANCO, PORTA);
 

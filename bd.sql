@@ -1,7 +1,6 @@
 CREATE DATABASE usuarios;
 USE usuarios;
 
-
 CREATE TABLE usuarios (
 id_usuario INT PRIMARY KEY AUTO_INCREMENT,
 nome VARCHAR(255) NOT NULL,
@@ -9,7 +8,6 @@ cpf VARCHAR(14) UNIQUE NOT NULL,
 senha VARCHAR(255) NOT NULL,
 email VARCHAR(255) UNIQUE NOT NULL
 );
-
 
 CREATE TABLE contas (
 id_conta INT PRIMARY KEY AUTO_INCREMENT,
@@ -21,13 +19,11 @@ data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
-
 CREATE TABLE categorias (
 id_categoria INT PRIMARY KEY AUTO_INCREMENT,
 nome_categoria VARCHAR(100) UNIQUE NOT NULL,
 tipo_categoria ENUM('despesa', 'receita') NOT NULL
 );
-
 
 CREATE TABLE transacoes (
 id_transacao INT PRIMARY KEY AUTO_INCREMENT,
