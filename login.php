@@ -1,38 +1,56 @@
 <?php
-session_start();
+include 'servidor.php';
 
-include("./servidor.php");
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $cpf = $_POST['cpf'] ?? '';
+    $senha = $_POST['senha'] ?? '';
 
-extract($_POST);
+   if (empty($cpf) || empty($senha)) {
+      echo "
+               <script>
+                  alert('Todos os campos são obrigatorios.');
+                  window.location.href = 'login.html';
+               </script>
+            ";
+      }
 
-$sql = " select  * from usuarios " ;
-$sql .= " where cpf = '".$cpf."' and  senha ='".$senha."'";
+    $stmt = $OOP->prepare("SELECT senha FROM usuarios WHERE cpf = ?");
+    $stmt->bind_param("s", $cpf);
+    $stmt->execute();
+    $stmt->store_result();
 
-$resultado  = mysqli_query($banco, $sql );
+    if ($stmt->num_rows === 1) {
+        $stmt->bind_result($senha_hash);
+        $stmt->fetch();
 
-echo mysqli_num_rows($resultado);
+        if (password_verify($senha, $senha_hash)) {
+            header("Location: index.html");
+            exit();
+        } else {
+            echo "
+                <script>
+                    alert('Senha incorreta.');
+                    window.location.href = 'login.html';
+                </script>
+            ";
+        }
+    } else {
+        echo "
+            <script>
+                alert('Usuário não encontrado.');
+                window.location.href = 'login.html';
+            </script>
+        ";
+    }
 
-
- if(mysqli_num_rows($resultado) == 1){
-
-   $campo = mysqli_fetch_array($resultado);
-
-
-   if($campo["Cli_Codigo"] == 1){
-      
-
-      $_SESSION["login"]["id"] = $campo["Cli_Codigo"];
-      $_SESSION["login"]["user"] = $campo["Cli_Nome"];
-
-      header("Location:adm.php");
-   }
-   else{
-      echo "errrrrroooooouuu";
-   }
-   }else{
-      unset($_SESSION["login"]);
-      header("location:index.php");
-      echo "<script type='text/javascript'>
-            alert('Login efetuado);
-            </script>";
-   }
+    $stmt->close();
+    $OOP->close();
+} else {
+    echo "
+        <script>
+            alert('Requisição inválida.');
+            window.location.href = 'login.html';
+        </script>
+    ";
+}
+?>

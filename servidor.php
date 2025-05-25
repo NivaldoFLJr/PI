@@ -1,13 +1,12 @@
 <?php
-    define('SERVIDOR', 'localhost');
-    define('USUARIO', 'root');
-    define('SENHA', '');
-    define('BANCO', 'usuarios');
-    define('PORTA', 3307);
+$servidor = "localhost";
+$usuario = "root";
+$senha = "";
+$banco = "usuarios";
 
-    $OOP = new mysqli(SERVIDOR, USUARIO, SENHA, BANCO, PORTA);
+$OOP = new mysqli($servidor, $usuario, $senha, $banco);
 
-    if ($OOP->connect_error) {
-        die("Falha na conexão: " . $OOP->connect_error);
-    }
+if ($OOP->connect_error) {
+    die("Falha na conexão: " . $OOP->connect_error);
+}
 ?>
