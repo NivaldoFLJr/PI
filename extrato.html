@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extrato Geral - MyFinance</title>
+</head>
+<body>
+    <h1>Extrato Geral</h1>
+    <section>
+        <form method="GET" action="extrato.php">
+            Período:
+            De <input type="date" name="data_inicio">
+            até <input type="date" name="data_fim"><br>
+
+            Tipo:
+            <select name="tipo_transacao">
+                <option value="">Todos</option>
+                <option value="receita">Receita</option>
+                <option value="despesa">Despesa</option>
+            </select><br>
+
+            <input type="submit" value="Filtrar">
+        </form>
+    </section>
+
+    <section>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Conta</th>
+                    <th>Categoria</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados virão do extrato.php com base no usuário -->
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
