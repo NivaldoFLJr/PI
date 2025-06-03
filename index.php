@@ -2,7 +2,6 @@
 session_start();
 require_once "servidor.php";
 
-// Obter resumo financeiro
 $sql = "SELECT 
             SUM(CASE WHEN tipo_transacao = 'receita' THEN valor ELSE 0 END) AS total_receitas,
             SUM(CASE WHEN tipo_transacao = 'despesa' THEN valor ELSE 0 END) AS total_despesas
