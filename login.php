@@ -1,56 +1,45 @@
 <?php
+session_start();
 include 'servidor.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $cpf = $_POST['cpf'] ?? '';
     $senha = $_POST['senha'] ?? '';
 
-   if (empty($cpf) || empty($senha)) {
-      echo "
-               <script>
-                  alert('Todos os campos são obrigatorios.');
-                  window.location.href = 'login.html';
-               </script>
-            ";
-      }
+    if (empty($cpf) || empty($senha)) {
+        echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href = 'login.html';</script>";
+        exit();
+    }
 
-    $stmt = $OOP->prepare("SELECT senha FROM usuarios WHERE cpf = ?");
+    $sql = "SELECT id_usuario, nome, senha FROM usuarios WHERE cpf = ?";
+    $stmt = $OOP->prepare($sql);
+    if (!$stmt) {
+        die("Erro de preparação: " . $OOP->error);
+    }
+
     $stmt->bind_param("s", $cpf);
     $stmt->execute();
-    $stmt->store_result();
+    $resultado = $stmt->get_result();
 
-    if ($stmt->num_rows === 1) {
-        $stmt->bind_result($senha_hash);
-        $stmt->fetch();
+    if ($resultado->num_rows === 1) {
+        $usuario = $resultado->fetch_assoc();
 
-        if (password_verify($senha, $senha_hash)) {
+        if (password_verify($senha, $usuario['senha'])) {
+            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+            $_SESSION['nome'] = $usuario['nome'];
+
             header("Location: index.php");
             exit();
         } else {
-            echo "
-                <script>
-                    alert('Senha incorreta.');
-                    window.location.href = 'login.html';
-                </script>
-            ";
+            echo "<script>alert('Senha incorreta.'); window.location.href = 'login.html';</script>";
+            exit();
         }
     } else {
-        echo "
-            <script>
-                alert('Usuário não encontrado.');
-                window.location.href = 'login.html';
-            </script>
-        ";
+        echo "<script>alert('Usuário não encontrado.'); window.location.href = 'login.html';</script>";
+        exit();
     }
 
     $stmt->close();
     $OOP->close();
-} else {
-    echo "
-        <script>
-            alert('Requisição inválida.');
-            window.location.href = 'login.html';
-        </script>
-    ";
 }
 ?>

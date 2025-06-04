@@ -1,60 +1,124 @@
 <?php
 session_start();
-require_once "servidor.php";
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.html");
+    exit();
+}
+
+include 'servidor.php';
 
 $id_usuario = $_SESSION['id_usuario'];
 
 $data_inicio = $_GET['data_inicio'] ?? null;
 $data_fim = $_GET['data_fim'] ?? null;
-$tipo = $_GET['tipo_transacao'] ?? null;
+$tipo_transacao = $_GET['tipo_transacao'] ?? null;
 
-$query = "SELECT t.*, c.nome_conta, cat.nome_categoria 
-          FROM transacoes t
-          JOIN contas c ON t.id_conta = c.id_conta
-          JOIN categorias cat ON t.id_categoria = cat.id_categoria
-          WHERE t.id_usuario = ?";
-$params = [$id_usuario];
-$types = "i";
+$sql = "
+    SELECT 
+        t.data_transacao,
+        c.nome_conta,
+        cat.nome_categoria,
+        t.tipo_transacao,
+        t.descricao,
+        t.valor
+    FROM transacoes t
+    JOIN contas c ON t.id_conta = c.id_conta
+    JOIN categorias cat ON t.id_categoria = cat.id_categoria
+    WHERE t.id_usuario = ?
+";
 
-if ($tipo) {
-    $query .= " AND t.tipo_transacao = ?";
-    $params[] = $tipo;
-    $types .= "s";
+// Adiciona filtros dinâmicos
+$tipos = [];
+if ($data_inicio) {
+    $sql .= " AND t.data_transacao >= ?";
+    $tipos[] = $data_inicio;
+}
+if ($data_fim) {
+    $sql .= " AND t.data_transacao <= ?";
+    $tipos[] = $data_fim;
+}
+if ($tipo_transacao) {
+    $sql .= " AND t.tipo_transacao = ?";
+    $tipos[] = $tipo_transacao;
 }
 
-if ($data_inicio && $data_fim) {
-    $query .= " AND t.data_transacao BETWEEN ? AND ?";
-    $params[] = $data_inicio;
-    $params[] = $data_fim;
-    $types .= "ss";
+$sql .= " ORDER BY t.data_transacao DESC";
+
+$stmt = $OOP->prepare($sql);
+
+if (!$stmt) {
+    die("Erro ao preparar consulta: " . $OOP->error);
 }
 
-$query .= " ORDER BY t.data_transacao DESC";
+// Monta os parâmetros dinamicamente
+$bind_types = str_repeat("s", count($tipos));
+$params = array_merge([$id_usuario], $tipos);
+$bind_types = "i" . $bind_types; // o primeiro parâmetro é int
 
-$stmt = $OOP->prepare($query);
-$stmt->bind_param($types, ...$params);
+// bind_param com call_user_func_array
+$stmt->bind_param($bind_types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
-
-echo "<table border='1'>
-<tr>
-    <th>Data</th>
-    <th>Conta</th>
-    <th>Categoria</th>
-    <th>Tipo</th>
-    <th>Descrição</th>
-    <th>Valor</th>
-</tr>";
-
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>
-        <td>{$row['data_transacao']}</td>
-        <td>{$row['nome_conta']}</td>
-        <td>{$row['nome_categoria']}</td>
-        <td>{$row['tipo_transacao']}</td>
-        <td>{$row['descricao']}</td>
-        <td>R$ " . number_format($row['valor'], 2, ',', '.') . "</td>
-    </tr>";
-}
-echo "</table>";
 ?>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Extrato</title>
+</head>
+<body>
+    <h1>Extrato Geral</h1>
+    <section>
+        <form method="GET" action="extrato.php">
+            Período:
+            De <input type="date" name="data_inicio" value="<?= htmlspecialchars($data_inicio) ?>">
+            até <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>"><br>
+
+            Tipo:
+            <select name="tipo_transacao">
+                <option value="">Todos</option>
+                <option value="receita" <?= $tipo_transacao === "receita" ? "selected" : "" ?>>Receita</option>
+                <option value="despesa" <?= $tipo_transacao === "despesa" ? "selected" : "" ?>>Despesa</option>
+            </select><br>
+
+            <input type="submit" value="Filtrar">
+        </form>
+    </section>
+
+    <section>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Conta</th>
+                    <th>Categoria</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($linha = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($linha['data_transacao']) ?></td>
+                        <td><?= htmlspecialchars($linha['nome_conta']) ?></td>
+                        <td><?= htmlspecialchars($linha['nome_categoria']) ?></td>
+                        <td><?= htmlspecialchars($linha['tipo_transacao']) ?></td>
+                        <td><?= htmlspecialchars($linha['descricao']) ?></td>
+                        <td>R$ <?= number_format($linha['valor'], 2, ',', '.') ?></td>
+                    </tr>
+                <?php endwhile; ?>
+                <?php if ($result->num_rows === 0): ?>
+                    <tr><td colspan="6">Nenhuma transação encontrada.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <p><a href="transacao.php">➕ Nova Transação</a></p>
+        <p><a href="index.php">Voltar ao index</a></p>
+        <p><a href="logout.php">🚪 Sair</a></p>
+    </section>
+</body>
+</html>

@@ -42,16 +42,26 @@ FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 
 DELIMITER //
 
-CREATE TRIGGER after_usuario_insert
-AFTER INSERT ON contas
+CREATE TRIGGER before_insert_conta
+BEFORE INSERT ON contas
 FOR EACH ROW
 BEGIN
-    DECLARE usuario_nome VARCHAR(255);
+    DECLARE nome_usuario VARCHAR(255);
 
-    SELECT nome INTO usuario_nome FROM usuarios WHERE id_usuario = NEW.id_usuario;
+    IF NEW.nome_conta IS NULL OR NEW.nome_conta = '' THEN
+        SELECT nome INTO nome_usuario 
+        FROM usuarios 
+        WHERE id_usuario = NEW.id_usuario;
 
-    UPDATE contas SET nome_conta = usuario_nome WHERE id_conta = NEW.id_conta;
+        SET NEW.nome_conta = CONCAT('Conta de ', nome_usuario);
+    END IF;
 END;
-
 //
+
 DELIMITER ;
+
+INSERT INTO categorias (nome_categoria, tipo_categoria) VALUES
+('Alimentação', 'despesa'),
+('Salário', 'receita'),
+('Lazer', 'despesa'),
+('Investimentos', 'receita');

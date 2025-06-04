@@ -1,70 +1,92 @@
 <?php
 session_start();
-require_once "servidor.php";
-
-$sql = "SELECT 
-            SUM(CASE WHEN tipo_transacao = 'receita' THEN valor ELSE 0 END) AS total_receitas,
-            SUM(CASE WHEN tipo_transacao = 'despesa' THEN valor ELSE 0 END) AS total_despesas
-        FROM transacoes
-        WHERE id_usuario = ?";
-$stmt = $OOP->prepare($sql);
-$stmt->bind_param("i", $id_usuario);
-$stmt->execute();
-$resumo = $stmt->get_result()->fetch_assoc();
-$saldo = $resumo['total_receitas'] - $resumo['total_despesas'];
-
-$sql2 = "SELECT cat.nome_categoria, SUM(t.valor) AS total
-         FROM transacoes t
-         JOIN categorias cat ON t.id_categoria = cat.id_categoria
-         WHERE t.id_usuario = ? AND t.tipo_transacao = 'despesa'
-         GROUP BY cat.nome_categoria";
-$stmt2 = $OOP->prepare($sql2);
-$stmt2->bind_param("i", $id_usuario);
-$stmt2->execute();
-$result = $stmt2->get_result();
-
-$categorias = [];
-$valores = [];
-while ($row = $result->fetch_assoc()) {
-    $categorias[] = $row['nome_categoria'];
-    $valores[] = $row['total'];
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.html");
+    exit();
 }
+
+include 'servidor.php';
+
+$id_usuario = $_SESSION['id_usuario'];
+$nome = $_SESSION['nome'];
+
+$sqlSaldo = "SELECT SUM(saldo) AS saldo_total FROM contas WHERE id_usuario = ?";
+$stmtSaldo = $OOP->prepare($sqlSaldo);
+$stmtSaldo->bind_param("i", $id_usuario);
+$stmtSaldo->execute();
+$resultadoSaldo = $stmtSaldo->get_result();
+$saldoTotal = $resultadoSaldo->fetch_assoc()['saldo_total'] ?? 0.00;
+$stmtSaldo->close();
+
+$sqlTransacoes = "
+    SELECT 
+        t.data_transacao, 
+        t.tipo_transacao, 
+        t.valor, 
+        t.descricao, 
+        c.nome_conta,
+        cat.nome_categoria
+    FROM transacoes t
+    JOIN contas c ON t.id_conta = c.id_conta
+    JOIN categorias cat ON t.id_categoria = cat.id_categoria
+    WHERE t.id_usuario = ?
+    ORDER BY t.data_transacao DESC
+    LIMIT 5
+";
+$stmtTransacoes = $OOP->prepare($sqlTransacoes);
+$stmtTransacoes->bind_param("i", $id_usuario);
+$stmtTransacoes->execute();
+$resultadoTransacoes = $stmtTransacoes->get_result();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
     <title>Dashboard - MyFinance</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Bem-vindo ao MyFinance</h1>
-    <h2>Resumo financeiro</h2>
-    <p>Receitas: R$ <?= number_format($resumo['total_receitas'], 2, ',', '.') ?></p>
-    <p>Despesas: R$ <?= number_format($resumo['total_despesas'], 2, ',', '.') ?></p>
-    <p><strong>Saldo: R$ <?= number_format($saldo, 2, ',', '.') ?></strong></p>
+    <h1>Bem-vindo, <?= htmlspecialchars($nome) ?>!</h1>
 
-    <h2>Distribuição de despesas</h2>
-    <canvas id="graficoDespesas" width="400" height="400"></canvas>
+    <section>
+        <h2>Saldo total: R$ <?= number_format($saldoTotal, 2, ',', '.') ?></h2>
+    </section>
 
-    <script>
-    const ctx = document.getElementById('graficoDespesas').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: <?= json_encode($categorias) ?>,
-            datasets: [{
-                label: 'Despesas por categoria',
-                data: <?= json_encode($valores) ?>,
-                backgroundColor: [
-                    '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40'
-                ]
-            }]
-        }
-    });
-    </script>
+    <section>
+        <h2>Últimas transações</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Conta</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($resultadoTransacoes->num_rows > 0): ?>
+                    <?php while ($row = $resultadoTransacoes->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['data_transacao']) ?></td>
+                            <td><?= htmlspecialchars($row['tipo_transacao']) ?></td>
+                            <td>R$ <?= number_format($row['valor'], 2, ',', '.') ?></td>
+                            <td><?= htmlspecialchars($row['nome_conta']) ?></td>
+                            <td><?= htmlspecialchars($row['nome_categoria']) ?></td>
+                            <td><?= htmlspecialchars($row['descricao']) ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr><td colspan="6">Nenhuma transação registrada.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </section>
 
-    <p><a href="transacao.html">Adicionar transação</a></p>
-    <p><a href="extrato.html">Ver extrato</a></p>
-    <p><a href="logout.php">Sair</a></p>
+    <section>
+        <p><a href="transacao.php">➕ Nova Transação</a></p>
+        <p><a href="extrato.php">📄 Ver Extrato</a></p>
+        <p><a href="logout.php">🚪 Sair</a></p>
+    </section>
 </body>
 </html>
