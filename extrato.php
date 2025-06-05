@@ -27,7 +27,6 @@ $sql = "
     WHERE t.id_usuario = ?
 ";
 
-// Adiciona filtros dinâmicos
 $tipos = [];
 if ($data_inicio) {
     $sql .= " AND t.data_transacao >= ?";
@@ -50,12 +49,10 @@ if (!$stmt) {
     die("Erro ao preparar consulta: " . $OOP->error);
 }
 
-// Monta os parâmetros dinamicamente
 $bind_types = str_repeat("s", count($tipos));
 $params = array_merge([$id_usuario], $tipos);
-$bind_types = "i" . $bind_types; // o primeiro parâmetro é int
+$bind_types = "i" . $bind_types;
 
-// bind_param com call_user_func_array
 $stmt->bind_param($bind_types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
