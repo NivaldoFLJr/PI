@@ -63,59 +63,64 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Extrato</title>
+    <link rel="stylesheet" href="styles/extrato.css">
 </head>
 <body>
-    <h1>Extrato Geral</h1>
-    <section>
-        <form method="GET" action="extrato.php">
-            Período:
-            De <input type="date" name="data_inicio" value="<?= htmlspecialchars($data_inicio) ?>">
-            até <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>"><br>
+    <div class="container">
+        <h1>Extrato Geral</h1>
 
-            Tipo:
-            <select name="tipo_transacao">
-                <option value="">Todos</option>
-                <option value="receita" <?= $tipo_transacao === "receita" ? "selected" : "" ?>>Receita</option>
-                <option value="despesa" <?= $tipo_transacao === "despesa" ? "selected" : "" ?>>Despesa</option>
-            </select><br>
+        <section>
+            <form method="GET" action="extrato.php">
+                <label>Período:</label>
+                De <input type="date" name="data_inicio" value="<?= htmlspecialchars($data_inicio) ?>">
+                até <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>">
 
-            <input type="submit" value="Filtrar">
-        </form>
-    </section>
+                <label>Tipo:</label>
+                <select name="tipo_transacao">
+                    <option value="">Todos</option>
+                    <option value="receita" <?= $tipo_transacao === "receita" ? "selected" : "" ?>>Receita</option>
+                    <option value="despesa" <?= $tipo_transacao === "despesa" ? "selected" : "" ?>>Despesa</option>
+                </select>
 
-    <section>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Conta</th>
-                    <th>Categoria</th>
-                    <th>Tipo</th>
-                    <th>Descrição</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($linha = $result->fetch_assoc()): ?>
+                <input type="submit" value="Filtrar">
+            </form>
+        </section>
+
+        <section>
+            <table>
+                <thead>
                     <tr>
-                        <td><?= htmlspecialchars($linha['data_transacao']) ?></td>
-                        <td><?= htmlspecialchars($linha['nome_conta']) ?></td>
-                        <td><?= htmlspecialchars($linha['nome_categoria']) ?></td>
-                        <td><?= htmlspecialchars($linha['tipo_transacao']) ?></td>
-                        <td><?= htmlspecialchars($linha['descricao']) ?></td>
-                        <td>R$ <?= number_format($linha['valor'], 2, ',', '.') ?></td>
+                        <th>Data</th>
+                        <th>Conta</th>
+                        <th>Categoria</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
                     </tr>
-                <?php endwhile; ?>
-                <?php if ($result->num_rows === 0): ?>
-                    <tr><td colspan="6">Nenhuma transação encontrada.</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </section>
-    <section>
-        <p><a href="transacao.php">➕ Nova Transação</a></p>
-        <p><a href="index.php">Voltar ao index</a></p>
-        <p><a href="logout.php">🚪 Sair</a></p>
-    </section>
+                </thead>
+                <tbody>
+                    <?php while ($linha = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($linha['data_transacao']) ?></td>
+                            <td><?= htmlspecialchars($linha['nome_conta']) ?></td>
+                            <td><?= htmlspecialchars($linha['nome_categoria']) ?></td>
+                            <td><?= htmlspecialchars($linha['tipo_transacao']) ?></td>
+                            <td><?= htmlspecialchars($linha['descricao']) ?></td>
+                            <td>R$ <?= number_format($linha['valor'], 2, ',', '.') ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                    <?php if ($result->num_rows === 0): ?>
+                        <tr><td colspan="6">Nenhuma transação encontrada.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="links">
+            <a href="transacao.php">➕ Nova Transação</a>
+            <a href="index.php">Voltar à página inicial</a>
+            <a href="logout.php">🚪 Sair</a>
+        </section>
+    </div>
 </body>
 </html>

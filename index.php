@@ -43,50 +43,53 @@ $resultadoTransacoes = $stmtTransacoes->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - MyFinance</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
 </head>
 <body>
-    <h1>Bem-vindo, <?= htmlspecialchars($nome) ?>!</h1>
+    <div class="container">
+        <h1>Bem-vindo, <?= htmlspecialchars($nome) ?>!</h1>
 
-    <section>
-        <h2>Saldo total: R$ <?= number_format($saldoTotal, 2, ',', '.') ?></h2>
-    </section>
+        <section>
+            <h2>Saldo total: R$ <?= number_format($saldoTotal, 2, ',', '.') ?></h2>
+        </section>
 
-    <section>
-        <h2>Últimas transações</h2>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Tipo</th>
-                    <th>Valor</th>
-                    <th>Conta</th>
-                    <th>Categoria</th>
-                    <th>Descrição</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($resultadoTransacoes->num_rows > 0): ?>
-                    <?php while ($row = $resultadoTransacoes->fetch_assoc()): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['data_transacao']) ?></td>
-                            <td><?= htmlspecialchars($row['tipo_transacao']) ?></td>
-                            <td>R$ <?= number_format($row['valor'], 2, ',', '.') ?></td>
-                            <td><?= htmlspecialchars($row['nome_conta']) ?></td>
-                            <td><?= htmlspecialchars($row['nome_categoria']) ?></td>
-                            <td><?= htmlspecialchars($row['descricao']) ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr><td colspan="6">Nenhuma transação registrada.</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </section>
+        <section>
+            <h2>Últimas transações</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Conta</th>
+                        <th>Categoria</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($resultadoTransacoes->num_rows > 0): ?>
+                        <?php while ($row = $resultadoTransacoes->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['data_transacao']) ?></td>
+                                <td><?= htmlspecialchars($row['tipo_transacao']) ?></td>
+                                <td>R$ <?= number_format($row['valor'], 2, ',', '.') ?></td>
+                                <td><?= htmlspecialchars($row['nome_conta']) ?></td>
+                                <td><?= htmlspecialchars($row['nome_categoria']) ?></td>
+                                <td><?= htmlspecialchars($row['descricao']) ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="6">Nenhuma transação registrada.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
 
-    <section>
-        <p><a href="transacao.php">➕ Nova Transação</a></p>
-        <p><a href="extrato.php">📄 Ver Extrato</a></p>
-        <p><a href="logout.php">🚪 Sair</a></p>
-    </section>
+        <section>
+            <p><a href="transacao.php">➕ Nova Transação</a></p>
+            <p><a href="extrato.php">📄 Ver Extrato</a></p>
+            <p><a href="logout.php">🚪 Sair</a></p>
+        </section>
+    </div>
 </body>
 </html>
