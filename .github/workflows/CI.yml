@@ -29,23 +29,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Instalar PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mysqli, pdo_mysql
 
-      - name: Instalar tidy (HTML linter)
-        run: sudo apt-get update && sudo apt-get install -y tidy
-
       - name: Lint PHP
         run: |
           find . -name "*.php" -print0 | xargs -0 -n1 php -l
-
-      - name: Instalar Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
 
       - name: Instalar HTMLHint
         run: npm install -g htmlhint
