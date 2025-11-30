@@ -20,7 +20,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -ppassword"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -35,9 +35,16 @@ jobs:
           php-version: '8.2'
           extensions: mysqli, pdo_mysql
 
-      - name: linting
+      - name: Instalar tidy (HTML linter)
+        run: sudo apt-get update && sudo apt-get install -y tidy
+
+      - name: Lint PHP
         run: |
           find . -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Lint HTML
+        run: |
+          find . -name "*.html" -print0 | xargs -0 -n1 tidy -qe
 
       - name: Build Docker
         run: |
