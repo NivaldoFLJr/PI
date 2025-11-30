@@ -10,12 +10,12 @@ Siga os passos abaixo:
 
 1 - abra o Git no seu computador(o WSL já vem com o Git pré instalado) e clone o repositorio digitando o seguinte comando:
 
-- git clone https://github.com/NivaldoFLJr/PI.git.
+- git clone https://github.com/NivaldoFLJr/PI.git
 
 Feito isso, digite CD PI para acessar a pasta do projeto.
 
 2 - Já na pasta do projeto e com o docker aberto digite o seguinte no terminal de comando: 
-- docker-compose up -d. 
+- docker-compose up -d
 
 Aguarde o docker terminar de baixar a imagem, montar o container e os volumes.
 

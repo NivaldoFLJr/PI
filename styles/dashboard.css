@@ -1,67 +1,91 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #d7e4f4, #f0f4fa);
-    color: #333;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #d7e4f4, #f0f4fa);    margin: 0;
     padding: 0;
+    color: #333;
 }
 
-
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 40px auto;
     background-color: #ffffff;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    font-size: 28px;
-    margin-bottom: 15px;
+    text-align: center;
+    margin-bottom: 30px;
     color: #2c3e50;
 }
 
-h2 {
-    font-size: 22px;
-    margin-top: 25px;
-    margin-bottom: 10px;
-    color: #34495e;
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input,
+form select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    min-width: 150px;
+}
+
+form button,
+form input[type="submit"] {
+    padding: 8px 15px;
+    background-color: #4c8eda;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover,
+form input[type="submit"]:hover {
+    background-color: #1e3a8a;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 20px;
+    background-color: #fafafa;
 }
 
 th, td {
-    padding: 12px;
     border: 1px solid #ddd;
-    text-align: left;
+    padding: 10px;
+    text-align: center;
 }
 
 th {
     background-color: #ecf0f1;
-    font-weight: 600;
+    color: #000000;
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
+td {
+    background-color: #fff;
 }
 
 a {
-    text-decoration: none;
+    display: inline-block;
+    margin: 10px 10px 0 0;
     color: #6c5ce7;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 a:hover {
@@ -69,10 +93,7 @@ a:hover {
     text-decoration: underline;
 }
 
-section p {
-    margin-top: 15px;
-}
-
-section p a::before {
-    font-size: 18px;
+.links {
+    margin-top: 30px;
+    text-align: center;
 }
