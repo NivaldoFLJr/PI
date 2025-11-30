@@ -19,14 +19,14 @@ Feito isso, digite CD PI para acessar a pasta do projeto.
 
 Aguarde o docker terminar de baixar a imagem, montar o container e os volumes.
 
-3 - Caso tudo se conclua com exito, o site vai estar funcionando no link http://localhost:8081/.
+3 - Caso tudo se conclua com exito, o site vai estar funcionando no link http://localhost:8081/
 
 
 ## Outros
 
 Abaixo está uma lista de outros comandos que podem vir a serem uteis:
 
-o comando abaixo é para caso sejá necessário derrubar o projeto e inicia-lo novamente. Após a conclusão do comando, basta rodar novamente o comando do passo 2.
+o comando abaixo é para caso sejá necessário derrubar o projeto e inicia-lo novamente. Após a conclusão do comando, basta rodar novamente o comando do passo 2. Você tambem deve rodar esse comando quando for fechar o projeto caso não queira que o container fique rodando em segundo plano no seu docker.
 - docker-compose down -v
 
 O comando abaixo serve para puxar os logs da inicialização do aplicativo. Pode ser util para caso você não tenha certeza se o banco está funcionando ou para debuggar algum erro nesta etapa.
