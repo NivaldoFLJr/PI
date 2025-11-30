@@ -13,7 +13,7 @@ $data_inicio = $_GET['data_inicio'] ?? null;
 $data_fim = $_GET['data_fim'] ?? null;
 $tipo_transacao = $_GET['tipo_transacao'] ?? null;
 
-$sql = 
+$sql = "
     SELECT 
         t.data_transacao,
         c.nome_conta,
