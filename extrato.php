@@ -56,6 +56,8 @@ $bind_types = "i" . $bind_types;
 $stmt->bind_param($bind_types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
+
+include 'header.php';
 ?>
 
 <!DOCTYPE html>
@@ -114,12 +116,6 @@ $result = $stmt->get_result();
                     <?php endif; ?>
                 </tbody>
             </table>
-        </section>
-
-        <section class="links">
-            <a href="transacao.php">➕ Nova Transação</a>
-            <a href="index.php">Voltar à página inicial</a>
-            <a href="logout.php">🚪 Sair</a>
         </section>
     </div>
 </body>

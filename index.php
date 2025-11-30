@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.html");
     exit();
@@ -37,6 +38,8 @@ $stmtTransacoes = $OOP->prepare($sqlTransacoes);
 $stmtTransacoes->bind_param("i", $id_usuario);
 $stmtTransacoes->execute();
 $resultadoTransacoes = $stmtTransacoes->get_result();
+
+include 'header.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -83,12 +86,6 @@ $resultadoTransacoes = $stmtTransacoes->get_result();
                     <?php endif; ?>
                 </tbody>
             </table>
-        </section>
-
-        <section>
-            <p><a href="transacao.php">➕ Nova Transação</a></p>
-            <p><a href="extrato.php">📄 Ver Extrato</a></p>
-            <p><a href="logout.php">🚪 Sair</a></p>
         </section>
     </div>
 </body>

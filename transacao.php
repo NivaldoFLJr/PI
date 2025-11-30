@@ -8,6 +8,8 @@ if (!isset($_SESSION['id_usuario'])) {
 include 'servidor.php';
 
 $id_usuario = $_SESSION['id_usuario'];
+
+include 'header.php';
 ?>
 
 <!DOCTYPE html>
@@ -69,12 +71,6 @@ $id_usuario = $_SESSION['id_usuario'];
 
                 <input type="submit" value="Adicionar">
             </form>
-        </section>
-
-        <section>
-            <p><a href="extrato.php">📄 Ver Extrato</a></p>
-            <p><a href="index.php">Voltar à página inicial</a></p>
-            <p><a href="logout.php">🚪 Sair</a></p>
         </section>
     </div>
 </body>
