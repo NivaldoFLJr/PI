@@ -4,6 +4,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
+    branches: [ master ]
 
 jobs:
   build-and-test:
@@ -34,18 +35,27 @@ jobs:
         with:
           php-version: '8.2'
           extensions: mysqli, pdo_mysql
+          coverage: none
 
-      - name: Instalar tidy (HTML linter)
-        run: sudo apt-get update && sudo apt-get install -y tidy
+      - name: Lint PHP (sintaxe)
+        run: find . -name "*.php" -print0 | xargs -0 -n1 php -l
 
-      - name: Lint PHP
-        run: |
-          find . -name "*.php" -print0 | xargs -0 -n1 php -l
+      - name: Instalar PHPCS
+        run: composer global require "squizlabs/php_codesniffer=*"
+
+      - name: PHP_CodeSniffer (PSR-12)
+        run: ~/.composer/vendor/bin/phpcs --standard=PSR12 .
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Instalar HTMLHint
+        run: npm install -g htmlhint
 
       - name: Lint HTML
-        run: |
-          find . -name "*.html" -print0 | xargs -0 -n1 tidy -qe
+        run: htmlhint "**/*.html"
 
       - name: Build Docker
-        run: |
-          docker build -t myfinance-app .
+        run: docker build -t myfinance-app .
