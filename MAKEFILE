@@ -1,0 +1,25 @@
+APP_CONTAINER=app
+DB_CONTAINER=myfinance_db
+
+# --- Targets ---
+.PHONY: help up down bash_db logs
+
+help:
+	@echo "Comandos disponíveis:"
+	@echo "  make up       -> sobe o projeto (Docker Compose)"
+	@echo "  make down     -> derruba os containers e volumes"
+	@echo "  make bash_db  -> Abre o bash do container do MySQL"
+	@echo "  make logs     -> ver logs do container do banco"
+
+# Sobe o projeto
+up:
+	docker-compose up -d --build
+
+down:
+	docker-compose down -v
+
+bash_db:
+	docker exec -it $(DB_CONTAINER) bash
+
+logs:
+	docker logs -f $(DB_CONTAINER)

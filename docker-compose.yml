@@ -15,10 +15,10 @@ services:
     image: mysql:8.0
     container_name: myfinance_db
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: usuarios
       MYSQL_USER: myfinance_user
-      MYSQL_PASSWORD: myfinance_pass
+      MYSQL_PASSWORD: password
     ports:
       - "3307:3306"
     volumes:
