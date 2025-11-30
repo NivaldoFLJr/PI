@@ -7,6 +7,7 @@ $senha    = $env['DB_PASS'];
 $banco    = $env['DB_NAME'];
 
 $OOP = new mysqli($servidor, $usuario, $senha, $banco);
+$OOP->set_charset("utf8mb4");
 
 if ($OOP->connect_error) {
     die("Falha na conexão: " . $OOP->connect_error);
