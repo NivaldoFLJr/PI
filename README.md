@@ -32,7 +32,6 @@ o comando abaixo é para caso sejá necessário derrubar o projeto e inicia-lo n
 O comando abaixo serve para puxar os logs da inicialização do aplicativo. Pode ser util para caso você não tenha certeza se o banco está funcionando ou para debuggar algum erro nesta etapa.
 - docker logs myfinance_db
 
-Os comandos abaixo servem para você acessar a linha de comando do MySql rodando dentro do docker. Pode ser necessaria para adicionar ou checar manualmente alguma informação salva no banco.
+Os comandos abaixo servem para você acessar a linha de comando do MySql rodando dentro do docker. Pode ser necessaria para adicionar ou checar manualmente alguma informação salva no banco. Senha do usuário Root: password. Para fechar a linha de comando basta digitar "exit" duas vezes.
 - docker exec -it myfinance_db bash
 - mysql -u root -p
-Senha: password. Para fechar a linha de comando basta digitar "exit" duas vezes.
